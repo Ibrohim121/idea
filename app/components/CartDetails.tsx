@@ -125,7 +125,8 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
             <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">so`m</span>
           </div>
         </div>
-        <button className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-red-600 shadow-xl shadow-red-100 transition-all active:scale-[0.98] uppercase tracking-wider">
+        <button
+         className="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-red-600 shadow-xl shadow-red-100 transition-all active:scale-[0.98] uppercase tracking-wider">
           Buyurtmani tasdiqlash
         </button>
       </div>
