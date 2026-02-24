@@ -47,14 +47,14 @@ export default function DastavkaPage() {
             <Sidebar />
 
             {/* Main Content */}
-            <main className="flex-1 overflow-y-auto p-8 bg-gray-50/50">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50/50">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8 mt-16 lg:mt-0">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-gray-900">Dastavka Kunlari</h1>
-                        <p className="text-gray-500 mt-1">Firma buyurtmalari kelishining aniq jadvali (avtomatik yangilanadi)</p>
+                        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Dastavka Kunlari</h1>
+                        <p className="text-gray-500 mt-1 text-sm md:text-base">Firma buyurtmalari kelishining aniq jadvali (avtomatik yangilanadi)</p>
                     </div>
 
-                    <div className="relative w-full md:w-72">
+                    <div className="relative w-full lg:w-72">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="text"
@@ -66,7 +66,7 @@ export default function DastavkaPage() {
                     </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                     {filteredFirms.map((firm) => (
                         <div
                             key={firm.id}
