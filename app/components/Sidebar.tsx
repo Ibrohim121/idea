@@ -50,7 +50,7 @@ export default function Sidebar() {
         "fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 flex flex-col h-full shrink-0 transition-transform duration-300 transform",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="p-6">
+        <div className="p-6 pt-20 lg:pt-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
               <Truck className="text-red-600" size={28} />

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import ProductCard from '../components/ProductCard';
 import { Search } from 'lucide-react';
+import EditProductModal from '../components/EditProductModal';
 
 const products = [
     { id: 1, name: "Coca-Cola 1.5L", price: 12000, size: "1.5 L" },
@@ -26,10 +27,35 @@ const products = [
 
 export default function KatalogPage() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const handleCartClick = (product: any) => {
+        setSelectedProduct(product);
+        setIsModalOpen(true);
+    };
+
+    const handleAddToCart = (data: { quantity: number; productName: string; size: string }) => {
+        const cartData = JSON.parse(localStorage.getItem('cartItems') || '[]');
+
+        const newCartItem = {
+            id: Date.now(), // Noyob ID beramiz
+            name: data.productName,
+            quantity: data.quantity,
+            price: selectedProduct?.price || 0,
+            size: data.size
+        };
+
+        const updatedCart = [...cartData, newCartItem];
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+
+        // Hodisani trigger qilamiz, CartDetails o'zgarishni sezishi uchun
+        window.dispatchEvent(new Event('storage'));
+    };
 
     return (
         <div className="flex h-screen w-full overflow-hidden bg-white">
@@ -63,6 +89,7 @@ export default function KatalogPage() {
                             name={product.name}
                             price={product.price}
                             size={product.size}
+                            onCartClick={() => handleCartClick(product)}
                         />
                     ))}
 
@@ -73,6 +100,19 @@ export default function KatalogPage() {
                     )}
                 </div>
             </main>
+
+            <EditProductModal
+                key={selectedProduct?.id || 'none'}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onSave={handleAddToCart}
+                mode="add"
+                product={selectedProduct ? {
+                    name: selectedProduct.name,
+                    quantity: 1,
+                    size: selectedProduct.size
+                } : undefined}
+            />
         </div>
     );
 }

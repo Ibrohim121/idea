@@ -16,19 +16,34 @@ interface CartDetailsProps {
   fullWidth?: boolean;
 }
 
-const initialItems: CartItem[] = [
-  { id: 1, name: "Coca-Cola 1.5L", quantity: 2, price: 12000, size: "1.5 L" },
-  { id: 2, name: "Pepsi 1.5L", quantity: 1, price: 11500, size: "1.5 L" },
-  { id: 3, name: "Fanta 1.5L", quantity: 3, price: 11000, size: "1.5 L" },
-  { id: 4, name: "Lays Chips Classic", quantity: 1, price: 15000, size: "150 g" },
-  { id: 5, name: "Nestlé Water 0.5L", quantity: 12, price: 2500, size: "0.5 L" },
-  { id: 6, name: "Snikers Chocolate", quantity: 5, price: 8000, size: "50 g" },
-];
+const initialItems: CartItem[] = [];
 
 export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CartItem | null>(null);
+
+  // localStorage'dan yuklash
+  React.useEffect(() => {
+    const loadCart = () => {
+      const savedCart = localStorage.getItem('cartItems');
+      if (savedCart) {
+        setItems(JSON.parse(savedCart));
+      }
+    };
+
+    loadCart();
+
+    // Boshqa oynalardan (yoki katalogdan) o'zgarishlar kelsa
+    window.addEventListener('storage', loadCart);
+    return () => window.removeEventListener('storage', loadCart);
+  }, []);
+
+  // localStorage'ga saqlash
+  const updateCart = (newItems: CartItem[]) => {
+    setItems(newItems);
+    localStorage.setItem('cartItems', JSON.stringify(newItems));
+  };
 
   const handleEditClick = (item: CartItem) => {
     setEditingItem(item);
@@ -36,12 +51,12 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
   };
 
   const handleDeleteClick = (id: number) => {
-    setItems(items.filter(item => item.id !== id));
+    updateCart(items.filter(item => item.id !== id));
   };
 
   const handleSave = (newData: { quantity: number; productName: string; size: string }) => {
     if (editingItem) {
-      setItems(items.map(item =>
+      updateCart(items.map(item =>
         item.id === editingItem.id
           ? { ...item, name: newData.productName, quantity: newData.quantity, size: newData.size }
           : item
