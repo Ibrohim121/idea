@@ -7,10 +7,11 @@ interface ProfileCardProps {
     name: string;
     surname: string;
     phone: string;
+    firma?: string;
     image?: string;
 }
 
-export default function ProfileCard({ name, surname, phone, image }: ProfileCardProps) {
+export default function ProfileCard({ name, surname, phone, firma, image }: ProfileCardProps) {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = async () => {
@@ -35,6 +36,9 @@ export default function ProfileCard({ name, surname, phone, image }: ProfileCard
             <h3 className="text-base md:text-lg font-bold text-gray-800">
                 {name} {surname}
             </h3>
+            {firma && (
+                <p className="text-xs md:text-sm text-red-600 font-medium mt-1">{firma}</p>
+            )}
             <div className="flex items-center gap-2 mt-1 md:mt-2 text-gray-500">
                 <Phone size={14} className="text-red-500 md:w-[16px]" />
                 <span className="text-xs md:text-sm">{phone}</span>

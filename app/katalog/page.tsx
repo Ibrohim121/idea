@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import ProductCard from '../components/ProductCard';
 import { Search } from 'lucide-react';
 import EditProductModal from '../components/EditProductModal';
+import { useToast } from '../contexts/ToastContext';
 
 const products = [
     { id: 1, name: "Coca-Cola 1.5L", price: 12000, size: "1.5 L" },
@@ -29,6 +30,7 @@ export default function KatalogPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const { showToast } = useToast();
 
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,6 +54,9 @@ export default function KatalogPage() {
 
         const updatedCart = [...cartData, newCartItem];
         localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+
+        // Toast notificationni ko'rsatamiz
+        showToast(`${data.productName} (${data.quantity} ta) - Savatga qo'shildi`);
 
         // Hodisani trigger qilamiz, CartDetails o'zgarishni sezishi uchun
         window.dispatchEvent(new Event('storage'));
