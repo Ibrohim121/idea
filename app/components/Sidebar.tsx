@@ -2,11 +2,13 @@
 'use client';
 import React, { useState } from 'react';
 
-import { LayoutGrid, ShoppingCart, Truck, Calendar, Users, Package, Menu, X } from 'lucide-react';
+import { LayoutGrid, ShoppingCart, Truck, Calendar, Users, Package, Menu, X, User, Moon, Sun } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import AuthButton from './AuthButton';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Klasslarni birlashtirish uchun yordamchi funksiya
 function cn(...inputs: ClassValue[]) {
@@ -19,11 +21,14 @@ const menuItems = [
   { name: "Dastavka kuni", icon: Calendar, path: "/dastavka" },
   { name: "Savat", icon: ShoppingCart, path: "/savat" },
   { name: "Dastavshiklar", icon: Users, path: "/dastavshiklar" },
+  { name: "Profil", icon: User, path: "/profile" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
@@ -81,6 +86,21 @@ export default function Sidebar() {
               );
             })}
           </nav>
+        </div>
+        
+        <div className="p-4 border-t border-gray-200">
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-black text-white hover:bg-zinc-900 transition-colors"
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            {isDark ? "Light mode" : "Dark mode"}
+          </button>
+        </div>
+
+        {/* Auth Button */}
+        <div>
+          <AuthButton />
         </div>
       </aside>
     </>

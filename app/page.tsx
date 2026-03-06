@@ -3,7 +3,7 @@ import FirmGrid from './components/FirmGrid';
 
 export default function CatalogPage() {
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-white flex-col lg:flex-row">
+    <div className="flex h-screen w-full overflow-hidden bg-gray-50 flex-col lg:flex-row">
       {/* 1. Chap taraf */}
       <Sidebar />
 

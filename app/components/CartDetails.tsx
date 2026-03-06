@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { User, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import EditProductModal from './EditProductModal';
+import { useSession } from "next-auth/react";
 
 interface CartItem {
   id: number;
@@ -19,9 +20,14 @@ interface CartDetailsProps {
 const initialItems: CartItem[] = [];
 
 export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
+  const { data: session } = useSession();
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CartItem | null>(null);
+
+  const userDisplayName = session?.user?.name?.trim() || "Foydalanuvchi";
+  const userEmail = session?.user?.email || "Email topilmadi";
+  const userImage = session?.user?.image;
 
   // localStorage'dan yuklash
   React.useEffect(() => {
@@ -71,12 +77,20 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
   return (
     <section className={`${fullWidth ? 'flex-1' : 'w-85 hidden 2xl:flex'} bg-white border-l border-gray-200 p-4 md:p-6 flex flex-col h-full`}>
       <div className="flex items-center gap-4 mb-6 md:mb-10 p-3 md:p-4 bg-gray-50 rounded-2xl">
-        <div className="w-10 h-10 md:w-12 md:h-12 bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-red-200">
-          <User size={20} className="md:w-[24px]" />
+        <div className="w-10 h-10 md:w-12 md:h-12 bg-red-500 rounded-full flex items-center justify-center text-white overflow-hidden">
+          {userImage ? (
+            <img
+              src={userImage}
+              alt={userDisplayName}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <User size={20} className="md:w-[24px]" />
+          )}
         </div>
         <div className="overflow-hidden">
-          <p className="font-bold text-gray-900 truncate text-sm md:text-base">Abdurahmon Admin</p>
-          <p className="text-[10px] md:text-xs text-gray-500 font-medium">ID: #49582</p>
+          <p className="font-bold text-gray-900 truncate text-sm md:text-base">{userDisplayName}</p>
+          <p className="text-[10px] md:text-xs text-gray-500 font-medium truncate">{userEmail}</p>
         </div>
       </div>
 
@@ -90,9 +104,9 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
 
         <div className="space-y-2 md:space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between group cursor-pointer p-3 md:p-4 hover:bg-red-50/40 rounded-2xl transition-all border border-transparent hover:border-red-100 hover:shadow-sm">
+            <div key={item.id} className="flex items-center justify-between group cursor-pointer p-3 md:p-4 hover:bg-red-50/40 rounded-2xl transition-all border border-transparent hover:border-red-100">
               <div className="flex items-center gap-3 md:gap-4">
-                <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500 shadow-sm shadow-red-200 shrink-0" />
+                <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500 shrink-0" />
                 <div>
                   <h4 className="font-bold text-gray-800 text-xs md:text-sm line-clamp-1">{item.name}</h4>
                   <div className="flex items-center gap-2 mt-0.5 md:mt-1">
@@ -141,7 +155,7 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
           </div>
         </div>
         <button
-          className="w-full bg-gray-900 text-white py-4 md:py-5 rounded-2xl font-black text-sm md:text-lg hover:bg-red-600 shadow-xl shadow-red-100 transition-all active:scale-[0.98] uppercase tracking-wider">
+          className="w-full bg-gray-900 text-white py-4 md:py-5 rounded-2xl font-black text-sm md:text-lg hover:bg-red-600 transition-all active:scale-[0.98] uppercase tracking-wider">
           Tasdiqlash
         </button>
       </div>

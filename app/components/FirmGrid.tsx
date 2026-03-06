@@ -18,7 +18,7 @@ export default function FirmGrid() {
   );
 
   return (
-    <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50/50">
+    <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-8 mt-16 lg:mt-0">
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">Firmalar</h1>
         <div className="relative w-full lg:w-72">
