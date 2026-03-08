@@ -13,7 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ name, price, size, image, onCartClick }: ProductCardProps) {
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 md:p-6 flex flex-col transition-all hover:shadow-xl hover:border-red-100 group">
+        <div className="bg-white rounded-2xl border border-gray-100 p-4 md:p-6 flex flex-col transition-all hover:border-red-100 group">
             <div className="aspect-square bg-gray-50 rounded-2xl flex items-center justify-center mb-4 md:mb-6 overflow-hidden border border-gray-100 group-hover:bg-red-50/50 transition-colors">
                 {image ? (
                     <img src={image} alt={name} className="w-full h-full object-contain p-4" />
@@ -27,7 +27,7 @@ export default function ProductCard({ name, price, size, image, onCartClick }: P
                     <h3 className="text-sm md:text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors leading-tight line-clamp-2">
                         {name}
                     </h3>
-                    <span className="text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded text-gray-500 whitespace-nowrap ml-2">
+                    <span className="text-[10px] font-bold bg-red-600 px-1.5 py-0.5 rounded text-white whitespace-nowrap ml-2">
                         {size}
                     </span>
                 </div>
@@ -39,13 +39,13 @@ export default function ProductCard({ name, price, size, image, onCartClick }: P
                             <span className="text-lg md:text-2xl font-black text-gray-900">
                                 {price.toLocaleString('uz-UZ')}
                             </span>
-                            <span className="text-[10px] font-bold text-gray-400 uppercase">so'm</span>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">so&apos;m</span>
                         </div>
                     </div>
 
                     <button
                         onClick={onCartClick}
-                        className="p-2 md:p-3 bg-gray-900 text-white rounded-xl hover:bg-red-600 transition-all active:scale-95 shadow-lg shadow-gray-200">
+                        className="p-2 md:p-3 bg-gray-900 text-white rounded-xl hover:bg-red-600 transition-all active:scale-95">
                         <ShoppingCart size={16} className="md:w-[20px]" />
                     </button>
                 </div>

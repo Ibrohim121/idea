@@ -4,6 +4,8 @@ import React, { useState, useMemo } from 'react';
 import { User, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import EditProductModal from './EditProductModal';
 import { useSession } from "next-auth/react";
+import { useProfileOverrides } from "../contexts/ProfileOverrides";
+import { buildAvatarDataUrl } from "../lib/avatar";
 
 interface CartItem {
   id: number;
@@ -21,13 +23,14 @@ const initialItems: CartItem[] = [];
 
 export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
   const { data: session } = useSession();
+  const { overrides } = useProfileOverrides();
   const [items, setItems] = useState<CartItem[]>(initialItems);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<CartItem | null>(null);
 
-  const userDisplayName = session?.user?.name?.trim() || "Foydalanuvchi";
-  const userEmail = session?.user?.email || "Email topilmadi";
-  const userImage = session?.user?.image;
+  const userDisplayName = overrides.name || session?.user?.name?.trim() || "Foydalanuvchi";
+  const userEmail = overrides.email || session?.user?.email || "Email topilmadi";
+  const userImage = session?.user?.image || buildAvatarDataUrl(userDisplayName, userEmail);
 
   // localStorage'dan yuklash
   React.useEffect(() => {

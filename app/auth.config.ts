@@ -1,9 +1,11 @@
 import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
+import { buildAvatarDataUrl } from "./lib/avatar";
 
 export const authConfig = {
   secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   pages: {
     signIn: "/auth",
   },
@@ -51,6 +53,30 @@ export const authConfig = {
       }
 
       return isLoggedIn;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
+      }
+
+      if (!token.picture) {
+        token.picture = buildAvatarDataUrl(
+          typeof token.name === "string" ? token.name : undefined,
+          typeof token.email === "string" ? token.email : undefined
+        );
+      }
+
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.name = typeof token.name === "string" ? token.name : session.user.name;
+        session.user.email = typeof token.email === "string" ? token.email : session.user.email;
+        session.user.image = typeof token.picture === "string" ? token.picture : session.user.image;
+      }
+      return session;
     },
   },
 } satisfies NextAuthConfig;

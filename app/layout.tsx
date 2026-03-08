@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "./contexts/ToastContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { ProfileOverridesProvider } from "./contexts/ProfileOverrides";
 import ToastClient from "./components/ToastClient";
 import { SessionProvider } from "./components/SessionProvider";
 import { ConvexClientProvider } from "./components/ConvexClientProvider";
@@ -35,10 +36,12 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider>
             <ConvexClientProvider>
-              <ToastProvider>
-                {children}
-                <ToastClient />
-              </ToastProvider>
+              <ProfileOverridesProvider>
+                <ToastProvider>
+                  {children}
+                  <ToastClient />
+                </ToastProvider>
+              </ProfileOverridesProvider>
             </ConvexClientProvider>
           </SessionProvider>
         </ThemeProvider>
