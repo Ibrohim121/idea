@@ -3,8 +3,33 @@ import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { buildAvatarDataUrl } from "./lib/avatar";
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleProvider =
+  googleClientId && googleClientSecret
+    ? Google({
+        clientId: googleClientId,
+        clientSecret: googleClientSecret,
+      })
+    : null;
+
+if (!googleProvider) {
+  console.warn(
+    "Google auth disabled: GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET missing."
+  );
+}
+
+const authSecret =
+  process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET ?? undefined;
+
+if (!authSecret) {
+  console.warn(
+    "NEXTAUTH_SECRET (or AUTH_SECRET) is not set. NextAuth may fail in production."
+  );
+}
+
 export const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: authSecret,
   trustHost: true,
   pages: {
     signIn: "/auth",
@@ -13,10 +38,7 @@ export const authConfig = {
     strategy: "jwt",
   },
   providers: [
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
+    ...(googleProvider ? [googleProvider] : []),
     Credentials({
       id: "credentials",
       name: "Email",
