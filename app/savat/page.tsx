@@ -14,5 +14,7 @@ export default function SavatPage() {
                 <CartDetails fullWidth={true} />
             </main>
         </div>
+
+        
     );
 }
