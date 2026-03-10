@@ -116,7 +116,7 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
                     <span className="text-[10px] md:text-xs text-gray-400 bg-gray-50 px-1.5 md:px-2 py-0.5 rounded border border-gray-100">
                       {item.size}
                     </span>
-                    <span className="text-[10px] md:text-xs font-black text-red-500">
+                    <span className="text-[10px] md:text-xs font-black text-red-500 dark:text-red-400">
                       x {item.quantity}
                     </span>
                   </div>
@@ -125,13 +125,13 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
               <div className="flex items-center gap-0.5 md:gap-1">
                 <button
                   onClick={() => handleEditClick(item)}
-                  className="p-1.5 md:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+                  className="p-1.5 md:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:bg-blue-500/10 dark:hover:text-blue-300 dark:hover:bg-blue-500/20 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                 >
                   <Pencil size={16} className="md:w-[18px]" />
                 </button>
                 <button
                   onClick={() => handleDeleteClick(item.id)}
-                  className="p-1.5 md:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+                  className="p-1.5 md:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:text-red-400 dark:bg-red-500/10 dark:hover:text-red-300 dark:hover:bg-red-500/20 rounded-xl transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
                 >
                   <Trash2 size={16} className="md:w-[18px]" />
                 </button>
