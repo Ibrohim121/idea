@@ -3,32 +3,66 @@
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Mail, User, UserCircle } from "lucide-react";
+import { KeyRound, Lock, Mail } from "lucide-react";
 
 export default function AuthPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+
+  async function handleSendCode() {
+    if (!email || !password) {
+      setError("Email va parolni kiriting.");
+      return;
+    }
+
+    setError("");
+    setIsSendingCode(true);
+
+    try {
+      const response = await fetch("/api/auth/request-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data?.ok) {
+        setError(data?.error || "Kod yuborilmadi. Qayta urinib ko'ring.");
+        setIsSendingCode(false);
+        return;
+      }
+
+      setCodeSent(true);
+    } catch (err) {
+      setError("Kod yuborishda xatolik yuz berdi.");
+    } finally {
+      setIsSendingCode(false);
+    }
+  }
 
   async function handleCredentialsSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setIsLoading(true);
+    setIsVerifying(true);
 
     const result = await signIn("credentials", {
       email,
-      firstName,
-      lastName,
+      password,
+      code,
       redirect: false,
     });
 
-    setIsLoading(false);
+    setIsVerifying(false);
 
     if (result?.error) {
-      setError("Email, ism va familiyani to'g'ri kiriting.");
+      setError("Email, parol yoki kod noto'g'ri.");
       return;
     }
 
@@ -40,7 +74,7 @@ export default function AuthPage() {
       <section className="w-full max-w-md bg-white rounded-2xl border border-gray-200 shadow-sm p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-gray-900">Kirish / Ro&apos;yxatdan o&apos;tish</h1>
         <p className="text-sm text-gray-500 mt-2">
-          Tizimga kirish uchun Google yoki email, ism, familiya orqali davom eting.
+          Tizimga kirish uchun Google yoki email, parol va kod orqali davom eting.
         </p>
 
         <div className="mt-6 space-y-3">
@@ -101,44 +135,57 @@ export default function AuthPage() {
           </label>
 
           <label className="block">
-            <span className="text-sm text-gray-700">Ism</span>
+            <span className="text-sm text-gray-700">Parol</span>
             <div className="mt-1 flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
-              <User size={16} className="text-gray-400" />
+              <Lock size={16} className="text-gray-400" />
               <input
                 required
-                type="text"
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 className="w-full outline-none text-sm"
-                placeholder="Ali"
+                placeholder="Parolingiz"
               />
             </div>
           </label>
 
-          <label className="block">
-            <span className="text-sm text-gray-700">Familiya</span>
-            <div className="mt-1 flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
-              <UserCircle size={16} className="text-gray-400" />
-              <input
-                required
-                type="text"
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
-                className="w-full outline-none text-sm"
-                placeholder="Valiyev"
-              />
-            </div>
-          </label>
+          {codeSent ? (
+            <label className="block">
+              <span className="text-sm text-gray-700">Tasdiqlash kodi</span>
+              <div className="mt-1 flex items-center gap-2 border border-gray-300 rounded-lg px-3 py-2">
+                <KeyRound size={16} className="text-gray-400" />
+                <input
+                  required
+                  type="text"
+                  value={code}
+                  onChange={(event) => setCode(event.target.value)}
+                  className="w-full outline-none text-sm"
+                  placeholder="6 xonali kod"
+                />
+              </div>
+            </label>
+          ) : null}
 
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-white font-medium hover:bg-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {isLoading ? "Kutilmoqda..." : "Email bilan kirish / ro'yxatdan o'tish"}
-          </button>
+          {!codeSent ? (
+            <button
+              type="button"
+              onClick={handleSendCode}
+              disabled={isSendingCode}
+              className="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-white font-medium hover:bg-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSendingCode ? "Kod yuborilmoqda..." : "Kodni yuborish"}
+            </button>
+          ) : (
+            <button
+              type="submit"
+              disabled={isVerifying}
+              className="w-full mt-2 px-4 py-3 rounded-lg bg-gray-900 text-white font-medium hover:bg-black transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isVerifying ? "Kutilmoqda..." : "Kodni tasdiqlash va kirish"}
+            </button>
+          )}
         </form>
       </section>
     </main>

@@ -10,6 +10,8 @@
 
 import type * as auth from "../auth.js";
 import type * as myFunctions from "../myFunctions.js";
+import type * as otp from "../otp.js";
+import type * as otpActions from "../otpActions.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +22,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   myFunctions: typeof myFunctions;
+  otp: typeof otp;
+  otpActions: typeof otpActions;
 }>;
 
 /**

@@ -2,6 +2,8 @@ import type { NextAuthConfig } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { buildAvatarDataUrl } from "./lib/avatar";
+import { getConvexClient } from "./lib/convexServer";
+import { api } from "@/convex/_generated/api";
 
 const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -44,21 +46,34 @@ export const authConfig = {
       name: "Email",
       credentials: {
         email: { label: "Email", type: "email" },
-        firstName: { label: "Ism", type: "text" },
-        lastName: { label: "Familiya", type: "text" },
+        password: { label: "Parol", type: "password" },
+        code: { label: "Kod", type: "text" },
       },
       async authorize(credentials) {
         const email = credentials?.email?.toString().trim().toLowerCase();
-        const firstName = credentials?.firstName?.toString().trim();
-        const lastName = credentials?.lastName?.toString().trim();
+        const password = credentials?.password?.toString();
+        const code = credentials?.code?.toString().trim();
 
-        if (!email || !firstName || !lastName) return null;
+        if (!email || !password || !code) return null;
 
-        return {
-          id: email,
-          email,
-          name: `${firstName} ${lastName}`,
-        };
+        try {
+          const client = getConvexClient();
+          const user = await client.action(api.otpActions.verifyEmailOtp, {
+            email,
+            password,
+            code,
+          });
+
+          if (!user) return null;
+
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+          };
+        } catch (error) {
+          return null;
+        }
       },
     }),
   ],

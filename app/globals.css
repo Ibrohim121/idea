@@ -168,7 +168,7 @@
   .dark .focus\:ring-red-400:focus {
     --tw-ring-color: var(--ring) !important;
   }
-
+       
   /* Accent rangli taglar */
   .dark .bg-red-50,
   .dark .bg-red-50\/40,
