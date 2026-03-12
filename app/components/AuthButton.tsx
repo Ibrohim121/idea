@@ -4,14 +4,13 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { Mail, LogOut } from "lucide-react";
 import { useProfileOverrides } from "../contexts/ProfileOverrides";
-import { buildAvatarDataUrl } from "../lib/avatar";
 
 export default function AuthButton() {
   const { data: session } = useSession();
   const { overrides, clearOverrides } = useProfileOverrides();
   const displayName = overrides.name || session?.user?.name || "Foydalanuvchi";
   const displayEmail = overrides.email || session?.user?.email || "Email topilmadi";
-  const avatarImage = session?.user?.image || buildAvatarDataUrl(displayName, displayEmail);
+  const avatarImage = session?.user?.image;
 
   if (session?.user) {
     return (

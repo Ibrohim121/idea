@@ -5,7 +5,6 @@ import { User, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import EditProductModal from './EditProductModal';
 import { useSession } from "next-auth/react";
 import { useProfileOverrides } from "../contexts/ProfileOverrides";
-import { buildAvatarDataUrl } from "../lib/avatar";
 
 interface CartItem {
   id: number;
@@ -30,7 +29,7 @@ export default function CartDetails({ fullWidth = false }: CartDetailsProps) {
 
   const userDisplayName = overrides.name || session?.user?.name?.trim() || "Foydalanuvchi";
   const userEmail = overrides.email || session?.user?.email || "Email topilmadi";
-  const userImage = session?.user?.image || buildAvatarDataUrl(userDisplayName, userEmail);
+  const userImage = session?.user?.image;
 
   // localStorage'dan yuklash
   React.useEffect(() => {

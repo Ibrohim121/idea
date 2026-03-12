@@ -6,7 +6,6 @@ import { LogOut, Mail, Moon, Pencil, ShieldCheck, Sun, User2 } from "lucide-reac
 import Sidebar from "../components/Sidebar";
 import { useTheme } from "../contexts/ThemeContext";
 import { useProfileOverrides } from "../contexts/ProfileOverrides";
-import { buildAvatarDataUrl } from "../lib/avatar";
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -25,7 +24,7 @@ export default function ProfilePage() {
 
   const fullName = overrides.name || session?.user?.name || "Foydalanuvchi";
   const email = overrides.email || session?.user?.email || "email topilmadi";
-  const avatarImage = session?.user?.image || buildAvatarDataUrl(fullName, email);
+  const avatarImage = session?.user?.image;
   const initials = fullName
     .split(" ")
     .filter(Boolean)

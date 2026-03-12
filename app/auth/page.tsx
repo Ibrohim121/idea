@@ -103,13 +103,6 @@ export default function AuthPage() {
             Google orqali kirish
           </button>
 
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/", prompt: "select_account" })}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
-          >
-            <Mail size={18} />
-            Gmail orqali kirish
-          </button>
         </div>
 
         <div className="my-6 flex items-center gap-3">

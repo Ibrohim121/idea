@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
+import crypto from "crypto";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
-import { buildAvatarDataUrl } from "./lib/avatar";
 import { getConvexClient } from "./lib/convexServer";
 import { api } from "@/convex/_generated/api";
 
@@ -28,6 +28,14 @@ if (!authSecret) {
   console.warn(
     "NEXTAUTH_SECRET (or AUTH_SECRET) is not set. NextAuth may fail in production."
   );
+}
+
+function getEmailAvatarUrl(email?: string) {
+  if (!email) return undefined;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return undefined;
+  const hash = crypto.createHash("md5").update(normalized).digest("hex");
+  return `https://www.gravatar.com/avatar/${hash}?d=blank&s=256`;
 }
 
 export const authConfig = {
@@ -66,10 +74,13 @@ export const authConfig = {
 
           if (!user) return null;
 
+          const avatar = getEmailAvatarUrl(user.email);
+
           return {
             id: user.id,
             email: user.email,
             name: user.name,
+            image: avatar,
           };
         } catch (error) {
           return null;
@@ -98,11 +109,8 @@ export const authConfig = {
         token.picture = user.image;
       }
 
-      if (!token.picture) {
-        token.picture = buildAvatarDataUrl(
-          typeof token.name === "string" ? token.name : undefined,
-          typeof token.email === "string" ? token.email : undefined
-        );
+      if (!token.picture && typeof token.email === "string") {
+        token.picture = getEmailAvatarUrl(token.email);
       }
 
       return token;
